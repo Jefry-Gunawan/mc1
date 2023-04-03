@@ -150,6 +150,7 @@ struct CameraPreview : UIViewRepresentable{
 //        let path = UIBezierPath(roundedRect: CGRect(x: view.frame.midX - 125, y: view.frame.midY - 175, width: 250, height: 250), cornerRadius: cornerRadius)
 //        roundedRectLayer.path = path.cgPath
 //        view.layer.addSublayer(roundedRectLayer)
+        // aku laper
         
         camera.session.startRunning()
         
