@@ -141,15 +141,16 @@ struct CameraPreview : UIViewRepresentable{
         view.layer.addSublayer(camera.preview)
         
         // Add a rectangle layer to show the viewfinder
-        let roundedRectLayer = CAShapeLayer()
-        roundedRectLayer.strokeColor = UIColor.white.cgColor
-        roundedRectLayer.lineWidth = 8
-        roundedRectLayer.opacity = 0.75
-        roundedRectLayer.fillColor = UIColor.clear.cgColor
-        let cornerRadius: CGFloat = 20
-        let path = UIBezierPath(roundedRect: CGRect(x: view.frame.midX - 125, y: view.frame.midY - 175, width: 250, height: 250), cornerRadius: cornerRadius)
-        roundedRectLayer.path = path.cgPath
-        view.layer.addSublayer(roundedRectLayer)
+//        let roundedRectLayer = CAShapeLayer()
+//        roundedRectLayer.strokeColor = UIColor.white.cgColor
+//        roundedRectLayer.lineWidth = 8
+//        roundedRectLayer.opacity = 0.75
+//        roundedRectLayer.fillColor = UIColor.clear.cgColor
+//        let cornerRadius: CGFloat = 20
+//        let path = UIBezierPath(roundedRect: CGRect(x: view.frame.midX - 125, y: view.frame.midY - 175, width: 250, height: 250), cornerRadius: cornerRadius)
+//        roundedRectLayer.path = path.cgPath
+//        view.layer.addSublayer(roundedRectLayer)
+        
         camera.session.startRunning()
         
         return view
