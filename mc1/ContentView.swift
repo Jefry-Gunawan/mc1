@@ -113,8 +113,11 @@ struct CameraView: View {
     @StateObject var camera = CameraModel()
     @State private var isShowingSheet = false
     @State var status = "Scanning..."
+    @Environment(\.colorScheme) var colorScheme
     
-    @State var timeRemaining = 3
+    @State var timeRemaining = 2
+    @State var timeRemainingModal = 2
+    @State var flag = true
        let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     
@@ -127,12 +130,22 @@ struct CameraView: View {
                 Button(action: {
                     self.isShowingSheet = true
                 }, label: {
-                    Text(status)
-                        .fontWeight(.bold)
-                        .padding()
-                        .frame(maxWidth: .infinity, maxHeight: 70)
-                        .foregroundColor(.black)
-                        .background(RoundedCorners(color: .thickMaterial, tl: 20, tr: 20, bl: 0, br: 0))
+                    if colorScheme == .dark {
+                        Text(status)
+                            .fontWeight(.bold)
+                            .padding()
+                            .frame(maxWidth: .infinity, maxHeight: 70)
+                            .foregroundColor(Color.white)
+                            .background(RoundedCorners(color: .thickMaterial, tl: 20, tr: 20, bl: 0, br: 0))
+                    } else {
+                        Text(status)
+                            .fontWeight(.bold)
+                            .padding()
+                            .frame(maxWidth: .infinity, maxHeight: 70)
+                            .foregroundColor(Color.black)
+                            .background(RoundedCorners(color: .thickMaterial, tl: 20, tr: 20, bl: 0, br: 0))
+                    }
+                    
                 })
                 .padding(.bottom, 80)
             }
@@ -144,6 +157,13 @@ struct CameraView: View {
                     timeRemaining -= 1
                 } else if timeRemaining == 0 {
                     status = "Apple"
+                }
+                if timeRemainingModal > 0 {
+                    timeRemainingModal -= 1
+                } else if timeRemainingModal == 0 && flag == true {
+                    // flag agar is showing sheetnya nda muncul2 lagi
+                    flag = false
+                    isShowingSheet = true
                 }
             }
         }
