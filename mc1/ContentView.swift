@@ -11,13 +11,24 @@ import AVFoundation
 struct ContentView: View {
     var body: some View {
         TabView{
+            // Untuk Camera
             CameraView()
+                .ignoresSafeArea(.container, edges: [.top, .bottom])
+                .safeAreaInset(edge: .top, alignment: .center, spacing: 0) {
+                                Color.clear
+                                    .frame(height: 0)
+                                    .background(.ultraThinMaterial)
+                            }
+                .safeAreaInset(edge: .bottom, alignment: .center, spacing: 0) {
+                                Color.clear
+                                    .frame(height: 0)
+                                    .background(.thickMaterial)
+                            }
                 .tabItem {
                     Image(systemName: "camera.fill")
                     Text("Scan")
                 }
-            
-            Text("Hello World")
+            ProduceList()
                 .tabItem {
                     Image(systemName: "list.bullet")
                     Text("Produce List")
@@ -26,6 +37,13 @@ struct ContentView: View {
     }
 }
 
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
+
+// Untuk  mengubah color hex jadi Color Code
 extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
@@ -53,25 +71,88 @@ extension Color {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+// To make rounded rectangle on specified corners
+struct RoundedCorners: View {
+    var color: Material = .regularMaterial
+    var tl: CGFloat = 0.0
+    var tr: CGFloat = 0.0
+    var bl: CGFloat = 0.0
+    var br: CGFloat = 0.0
+    
+    var body: some View {
+        GeometryReader { geometry in
+            Path { path in
+                
+                let w = geometry.size.width
+                let h = geometry.size.height
+
+                // Make sure we do not exceed the size of the rectangle
+                let tr = min(min(self.tr, h/2), w/2)
+                let tl = min(min(self.tl, h/2), w/2)
+                let bl = min(min(self.bl, h/2), w/2)
+                let br = min(min(self.br, h/2), w/2)
+                
+                path.move(to: CGPoint(x: w / 2.0, y: 0))
+                path.addLine(to: CGPoint(x: w - tr, y: 0))
+                path.addArc(center: CGPoint(x: w - tr, y: tr), radius: tr, startAngle: Angle(degrees: -90), endAngle: Angle(degrees: 0), clockwise: false)
+                path.addLine(to: CGPoint(x: w, y: h - br))
+                path.addArc(center: CGPoint(x: w - br, y: h - br), radius: br, startAngle: Angle(degrees: 0), endAngle: Angle(degrees: 90), clockwise: false)
+                path.addLine(to: CGPoint(x: bl, y: h))
+                path.addArc(center: CGPoint(x: bl, y: h - bl), radius: bl, startAngle: Angle(degrees: 90), endAngle: Angle(degrees: 180), clockwise: false)
+                path.addLine(to: CGPoint(x: 0, y: tl))
+                path.addArc(center: CGPoint(x: tl, y: tl), radius: tl, startAngle: Angle(degrees: 180), endAngle: Angle(degrees: 270), clockwise: false)
+                path.closeSubpath()
+            }
+            .fill(self.color)
+        }
     }
 }
 
+// Camera View set ZStack and layout
 struct CameraView: View {
     @StateObject var camera = CameraModel()
+    @State private var isShowingSheet = false
+    @State var status = "Scanning..."
+    
+    @State var timeRemaining = 3
+       let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+
+    
     var body: some View{
         ZStack{
             CameraPreview(camera: camera)
             
             VStack{
                 Spacer()
-                
+                Button(action: {
+                    self.isShowingSheet = true
+                }, label: {
+                    Text(status)
+                        .fontWeight(.bold)
+                        .padding()
+                        .frame(maxWidth: .infinity, maxHeight: 70)
+                        .foregroundColor(.black)
+                        .background(RoundedCorners(color: .thickMaterial, tl: 20, tr: 20, bl: 0, br: 0))
+                })
+                .padding(.bottom, 80)
+            }
+            
+            // Timer untuk ganti isi variable dari Scanning ke Apple
+            Text("")
+            .onReceive(timer) { _ in
+                if timeRemaining > 0 {
+                    timeRemaining -= 1
+                } else if timeRemaining == 0 {
+                    status = "Apple"
+                }
             }
         }
         .onAppear {
             camera.Check()
+        }
+        .sheet(isPresented: $isShowingSheet) {
+            // Isi Modal Sheets
+            ModalSheets()
         }
     }
 }
@@ -150,7 +231,7 @@ struct CameraPreview : UIViewRepresentable{
         let path = UIBezierPath(roundedRect: CGRect(x: view.frame.midX - 125, y: view.frame.midY - 175, width: 250, height: 250), cornerRadius: cornerRadius)
         roundedRectLayer.path = path.cgPath
         view.layer.addSublayer(roundedRectLayer)
-
+        
         camera.session.startRunning()
         
         return view
