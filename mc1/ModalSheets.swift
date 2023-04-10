@@ -11,10 +11,13 @@ struct ModalSheets: View {
     var body: some View {
         ScrollView{
             VStack{
-                Text("Apple")
+                
+            }
+            VStack{
+                Text("Meat")
                     .font(.title)
                     .fontWeight(.bold)
-                Image("Apple")
+                Image("Cow")
                     .resizable()
                     .frame(width: 150, height: 150)
                 VStack(alignment: .leading){
@@ -29,26 +32,26 @@ struct ModalSheets: View {
                 HStack{
                     Spacer()
                     VStack{
-                        Image("Apple")
+                        Image("Cow")
                             .resizable()
                             .frame(width: 100, height: 100)
-                        Text("Unripe")
+                        Text("Bad")
                             .fontWeight(.semibold)
                     }
                     Spacer()
                     VStack{
-                        Image("Apple")
+                        Image("Cow")
                             .resizable()
                             .frame(width: 100, height: 100)
-                        Text("Ripe")
+                        Text("Okay")
                             .fontWeight(.semibold)
                     }
                     Spacer()
                     VStack{
-                        Image("Apple")
+                        Image("Cow")
                             .resizable()
                             .frame(width: 100, height: 100)
-                        Text("Overripe")
+                        Text("Good")
                             .fontWeight(.semibold)
                     }
                     Spacer()
@@ -64,7 +67,7 @@ struct ModalSheets: View {
                 }
             }
         }
-        .padding()
+        .padding(.horizontal, 20)
         .padding(.top, 15)
         .ignoresSafeArea(.container, edges: [.bottom])
     }

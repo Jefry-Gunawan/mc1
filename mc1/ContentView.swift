@@ -31,7 +31,7 @@ struct ContentView: View {
             ProduceList()
                 .tabItem {
                     Image(systemName: "list.bullet")
-                    Text("Produce List")
+                    Text("All Produce")
                 }
         }
     }
@@ -156,7 +156,7 @@ struct CameraView: View {
                 if timeRemaining > 0 {
                     timeRemaining -= 1
                 } else if timeRemaining == 0 {
-                    status = "Apple"
+                    status = "Meat"
                 }
                 if timeRemainingModal > 0 {
                     timeRemainingModal -= 1
